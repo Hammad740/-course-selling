@@ -1,42 +1,28 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const colors = require('colors');
 const morgan = require('morgan');
-const cors = require('cors');
-const { configDotenv } = require('dotenv');
-configDotenv();
-const PORT = process.env.PORT || 5000;
+const { userRouter } = require('./routes/user.js');
+const { courseRouter } = require('./routes/course.js');
+const { adminRouter } = require('./routes/admin.js');
+const PORT = 3000;
 
-////// middleware
+//// Middlewares
 app.use(cors());
 app.use(express.json());
-app.use('dev');
+app.use(morgan('dev'));
 
-app.post('/user/signup', (req, res) => {
-  res.json({ message: 'signup endpoint!' });
-});
+app.use('/api/v1/user', userRouter);
+app.use('/api/v1/course', courseRouter);
+app.use('/api/v1/admin', adminRouter);
 
-app.post('user/signin', (req, res) => {
-  res.json({
-    message: 'signin endpoint!',
-  });
-});
-
-app.get('user/purchases', (req, res) => {
-  res.json({
-    message: 'purchases endpoint! ',
-  });
-});
-
-app.post('/course/purchase', (req, res) => {
-  res.json({
-    message: 'course purchase endpoint',
-  });
-});
-app.get('/courses', (req, res) => {
-  res.json({ message: 'courses endpoint!' });
+app.get('/', (req, res) => {
+  res.send('Hello!');
 });
 
 app.listen(PORT, () => {
-  console.log(colors.bgBlue(`Server is listening on ${PORT}.....`).italic);
+  console.log(
+    colors.bgMagenta(`Server is listening on ${PORT}...`).italic.black
+  );
 });
